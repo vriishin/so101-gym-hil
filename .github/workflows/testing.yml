@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "gym_hil/**"
+      - "tests/**"
+      - "scripts/**"
+      - "configs/**"
+      - ".github/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+  push:
+    branches:
+      - main
+    paths:
+      - "gym_hil/**"
+      - "tests/**"
+      - "scripts/**"
+      - "configs/**"
+      - ".github/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+
+jobs:
+  pytest:
+    name: Pytest
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: tests/data
+      MUJOCO_GL: egl
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Install EGL
+        run: sudo apt-get update && sudo apt-get install -y libegl1-mesa-dev
+
+      - name: Install poetry
+        run: |
+          pipx install poetry && poetry config virtualenvs.in-project true
+          echo "${{ github.workspace }}/.venv/bin" >> $GITHUB_PATH
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+
+      - name: Install poetry dependencies
+        run: |
+          poetry install --all-extras
+
+      - name: Test with pytest
+        run: |
+          pytest tests -v --cov=./gym_hil --durations=0

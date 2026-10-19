@@ -1,0 +1,48 @@
+phase: visual_policy_integration
+seed: 0
+output_dir: outputs/visual_milestone5
+state_teacher_checkpoint: artifacts/milestone4/selected_state_policy.zip
+dataset_dir: outputs/visual_milestone5/demos
+image_size: [64, 64]
+demonstration_episodes: 100
+reset_perturbation_m: 0.01
+env:
+  episode_steps: 350
+  placement_episode_steps: 80
+  descent_episode_steps: 75
+  residual_action_scale: 0.05
+  horizontal_tolerance_m: 0.027
+  release_height_tolerance_m: 0.006
+  maximum_downward_velocity_m_s: 0.15
+  sustained_descent_steps: 3
+  lift_direction: [-1.0, -0.23467704, 0.58487764]
+  lift_action_scale: 0.3546039552
+behavior_cloning:
+  epochs: 30
+  batch_size: 64
+  learning_rate: 0.0003
+  action_loss_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 4.0]
+  validation_fraction: 0.20
+  evaluation_seeds: [18800, 18801, 18802, 18803, 18804, 18805, 18806, 18807, 18808, 18809, 18810, 18811, 18812, 18813, 18814, 18815, 18816, 18817, 18818, 18819]
+  device: cpu
+  seed: 0
+rlpd:
+  total_steps: 10000
+  pipeline_steps: 1000
+  batch_size: 64
+  demonstration_fraction: 0.50
+  replay_capacity: 30000
+  critic_learning_rate: 0.0003
+  actor_learning_rate: 0.000001
+  gamma: 0.99
+  tau: 0.005
+  entropy_coefficient: 0.001
+  update_every: 4
+  evaluation_interval: 1000
+  evaluation_episodes: 10
+  evaluation_seeds: [19000, 19001, 19002, 19003, 19004, 19005, 19006, 19007, 19008, 19009]
+  device: cpu
+compatibility:
+  lerobot_version_inspected: 0.6.0
+  integration: documented_feature_and_replay_adapter
+  direct_lerobot_runtime_installed: false

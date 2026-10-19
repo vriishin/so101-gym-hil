@@ -1,0 +1,42 @@
+env_id: gym_hil/SO101PickPlaceBase-v0
+reward_mode: staged_dense
+reward:
+  shaping_scale: 4.0
+  action_penalty_weight: 0.00001
+  jerk_penalty_weight: 0.00001
+seed: 0
+total_steps: 10000
+output_dir: outputs/state_sac_smoke
+checkpoint_interval_steps: 5000
+env:
+  randomize_reset: false
+  easy_reset: true
+  # Successful scripted trajectories average roughly 144 control steps.  Keep the
+  # learning horizon comfortably above that so imitation/RL policies can finish.
+  episode_length_s: 25.0
+  joint_delta_scale: 0.05
+  gripper_delta_scale: 0.10
+sac:
+  learning_rate: 0.0003
+  buffer_size: 20000
+  learning_starts: 250
+  batch_size: 64
+  gamma: 0.99
+  tau: 0.005
+  ent_coef: 0.01
+  train_freq: 1
+  gradient_steps: 1
+  net_arch: [128, 128]
+  device: cpu
+evaluation:
+  interval_steps: 5000
+  episodes: 10
+  seeds: [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009]
+demonstrations:
+  episodes: 0
+  seed_start: 0
+  seed_pool_size: 20
+  behavior_cloning_updates: 0
+  behavior_cloning_batch_size: 256
+  replay_seed: true
+  minimum_success_rate: 0.50
